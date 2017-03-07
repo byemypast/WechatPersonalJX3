@@ -445,7 +445,7 @@ def response(state,player_id,msg):
 					sendstr(VIPID, player_id +" 的唠嗑信息" + TalkingMode[player_id])
 				TalkingMode[player_id] = ""
 	elif (int(state))==6:
-		APP_TuLingKEY		
+		APP_TuLing(player_id,msg)	
 				
 				
 	elif (int(state)>=100)and(int(state)<200):
