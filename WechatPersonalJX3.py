@@ -21,8 +21,13 @@ def text_reply(msg):
 
 @itchat.msg_register(FRIENDS)
 def add_friend(msg):
+	print(msg)
 	itchat.add_friend(**msg['Text']) # 该操作会自动将新好友的消息录入，不需要重载通讯录
 	itchat.send_msg('Nice to meet you!', msg['RecommendInfo']['UserName'])
+
+@itchat.msg_register([MAP, CARD, NOTE, SHARING])
+def other_reply(msg):
+	itchat.send('你好~~',msg['FromUserName'])
 
 class Init(object):
 	def __init__(self):
@@ -87,7 +92,7 @@ class Init(object):
 
 initobj = Init()
 itchat.auto_login(True,enableCmdQR =2) #for linux
-itchat.run(False,False)
+itchat.run(True,False)
 
 while (1):
 	initobj.RealTimeUpdateTieba()
