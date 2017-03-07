@@ -4,13 +4,16 @@ import datetime
 import core.settings
 import core.userinfo
 import core.floater
+import core.goldprice
 from core.debug import *
 import time
 import itchat
+import requests
 
 PlayerState = {}
 PlayerSendID = {}
 VIPID = '@148cdb5861ba223818e905b76663b7591de19d1d6287838ffe9cf1bc73383e29'
+TULINGKEY = '67896e1c48174b3c906c4f505226790b'
 userdata = {}
 TIEBA_state = {}
 TotalServiceTime = 0
@@ -19,6 +22,7 @@ TalkingMode = {} #唠嗑模式记录
 #1：非第一次对话+主选单列出
 #2：选择主选单
 #3-5：唠嗑模式
+#6：聊天模式
 #100：职业选择APP初始化
 #200：贴吧百大
 #300：漂流瓶
@@ -215,6 +219,24 @@ def APP_professiontest(player_id,state,msg):
 			sendstr(player_id,'嘿嘿嘿，你最适合的职业大概是：纯阳~【仅供娱乐】希望再试一次吗？【1】我不服！再来！【2】玩腻了回主菜单')
 			PlayerState[player_id] = 111
 
+def APP_TuLing(player_id,msg):
+	if msg=='退出':
+		PlayerState[player_id] = 1
+		response(1,player_id,'from state 6')
+	else:
+		apiUrl = 'http://www.tuling123.com/openapi/api'
+		data = {
+						'key'    : TULINGKEY, # 如果这个Tuling Key不能用，那就换一个
+						'info'   : msg, # 这是我们发出去的消息
+						'userid' : 'wechat-robot-'+str(player_id), # 这里你想改什么都可以
+						}
+		try:
+			r = requests.post(apiUrl, data=data).json()
+			sendstr(player_id,r.get('Text'))
+		except Exception as e:
+			debug("图灵机器人出错，错误原因："+str(e))
+			sendstr(player_id,"群宝在打盹儿= =过会儿再来呗~~~")
+		
 
 def APP_ToTUTU(player_id):
 	if (player_id =='若竹')or(player_id =='君逸')or(player_id =='春风扫残雪'):
@@ -351,7 +373,9 @@ def response(state,player_id,msg):
 		'【4】: 漂流瓶 '
 		'【5】: 瞎比唠唠嗑 '
 		'【6】: 入帮/给作者提意见添加更多功能 '
-		'【7】: 本次开机统计/我的状态 ']
+		'【7】: 本次开机统计/我的状态 '
+		'【8】: 聊天模式 '
+		'【9】: 纵月实时最高金价（5173）']
 		if get_usertype(player_id).find('VIP')>=0:
 			strcache += VIPChoice
 		sendlist(player_id,strcache,1,0.1,0.5)
@@ -365,7 +389,9 @@ def response(state,player_id,msg):
 		'【4】: 漂流瓶 '
 		'【5】: 瞎比唠唠嗑 '
 		'【6】: 入帮/给作者提意见添加更多功能 '
-		'【7】: 本次开机统计/我的状态 ']
+		'【7】: 本次开机统计/我的状态 '
+		'【8】: 聊天模式'
+		'【9】: 纵月实时最高金价（5173）']
 		if get_usertype(player_id).find('VIP')>=0:
 			strcache += VIPChoice
 		sendlist(player_id,strcache,1,0.1,0.5)
@@ -398,6 +424,14 @@ def response(state,player_id,msg):
 			strcache = '[ '+get_usertype(player_id)+" 用户 ] " +player_id+" ，您的注册时间为 "+ userdata[player_id]['REGTIME']
 			sendstr(player_id,strcache)
 			PlayerState[player_id] = 1
+		elif msg=='8':
+			sendstr(player_id,'回复【退出】退出聊天模式！')
+			PlayerState[player_id] = 6
+		elif msg=='9':
+			data = core.goldprice.Get_5173Info()
+			maxprice = data.GetMaxPriceNow()
+			sendstr(player_id,'当前金价为：'+str(maxprice))
+			response(1,player_id,'from state 1,msg 9')
 	elif (int(state)>=3)and(int(state)<=5):
 		#唠嗑模式
 		if state==3:
@@ -410,7 +444,8 @@ def response(state,player_id,msg):
 					#VIP直接发邮件
 					sendstr(VIPID, player_id +" 的唠嗑信息" + TalkingMode[player_id])
 				TalkingMode[player_id] = ""
-					
+	elif (int(state))==6:
+		APP_TuLingKEY		
 				
 				
 	elif (int(state)>=100)and(int(state)<200):

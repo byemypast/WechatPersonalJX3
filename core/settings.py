@@ -1,25 +1,25 @@
 # -*- coding: gbk -*-
 import datetime
-#�汾��
-VERSION = 0.6
-#��������ʱ��
+#版本号
+VERSION = 0.7
+#程序启动时间
 STARTTIME = datetime.datetime.now()
-#�����ļ���
+#调试文件名
 debugname = "debug.txt"
-#����ʮ��ǿ�Ƴ�������ʱ����ʮ����Ϣ4
+#贴吧十大：强制程序启动时更新十大消息4
 TIEBA_UPDATE_FORCE = 0
-#��¼�û�ID�ļ���
+#记录用户ID文件名
 recordname = "record.txt"
-#����ʮ�󣺶���ͨ�û����Űٴ���
+#贴吧十大：对普通用户开放百大吗
 TIEBA_TOP100_TONONVIP = 1
-#Ư��ƿ�ļ�
+#漂流瓶文件
 floaterdbname = "floater_pool.txt"
 
 
-#�ʼ�ģ������
-mail_host="mail.xxxx"  #���÷�����
-mail_user="xxxxxxxx@xxx"    #�û���
-mail_pass="xxxxxxxx"   #���� 
+#邮件模块设置
+mail_host="mail.xxxx"  #设置服务器
+mail_user="xxxxxxxx@xxx"    #用户名
+mail_pass="xxxxxxxx"   #口令 
 var = {}
 var["TIEBA_UPDATE_TO"] = ""
 var['TIEBA_SHIDA'] = []

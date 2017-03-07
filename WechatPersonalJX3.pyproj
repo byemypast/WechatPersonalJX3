@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="chatmain.py" />
+    <Compile Include="core\goldprice.py" />
     <Compile Include="core\app\vip1.py" />
     <Compile Include="core\debug.py" />
     <Compile Include="core\floater.py" />
@@ -44,6 +45,7 @@
   <ItemGroup>
     <Content Include="core\app\vip1.py.bak" />
     <Content Include="core\app\__pycache__\vip1.cpython-36.pyc" />
+    <Content Include="readme.txt" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
