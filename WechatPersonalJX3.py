@@ -8,7 +8,7 @@ import core.userinfo
 import core.jx3tieba
 
 #@itchat.msg_register([TEXT, MAP, CARD, NOTE, SHARING])
-@itchat.msg_register([TEXT])
+@itchat.msg_register(TEXT)
 def text_reply(msg):
 	#itchat.send('%s: %s' % (msg['Type'], msg['Text']), msg['FromUserName'])
 	try:
@@ -28,6 +28,16 @@ def add_friend(msg):
 @itchat.msg_register([MAP, CARD, NOTE, SHARING])
 def other_reply(msg):
 	itchat.send('你好~~',msg['FromUserName'])
+
+@itchat.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO])
+def download_files(msg):
+	msg['Text'](msg['FileName'])
+	return '@%s@%s' % ({'Picture': 'img', 'Video': 'vid'}.get(msg['Type'], 'fil'), msg['FileName'])
+
+@itchat.msg_register(TEXT, isGroupChat=True)
+def text_reply(msg):
+	if msg['isAt']:
+		itchat.send(u'@%s\u2005I received: %s' % (msg['ActualNickName'], msg['Content']), msg['FromUserName'])
 
 class Init(object):
 	def __init__(self):
