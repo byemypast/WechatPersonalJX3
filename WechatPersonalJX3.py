@@ -17,7 +17,10 @@ def text_reply(msg):
 		debug("收到消息！来源："+usernick+" 内容："+msg['Text'])
 	except Exception as e:
 		debug("回复消息：解析用户错误！错误原因："+str(e)+",msg = "+str(msg))
-	core.game.core_input(usernick,int(time.time()),msg['Text'],msg['FromUserName'])
+	if core.settings.get_value('TIEBA_SHIDA_UPDATEING_STATE')==False:
+		core.game.core_input(usernick,int(time.time()),msg['Text'],msg['FromUserName'])
+	else:
+		itchat.send_msg('贴吧更新正在进行中，请稍后访问本公众号！',msg['FromUserName'])
 
 @itchat.msg_register(FRIENDS)
 def add_friend(msg):
@@ -41,6 +44,7 @@ def text_reply(msg):
 
 class Init(object):
 	def __init__(self):
+		core.settings.set_value('TIEBA_SHIDA_UPDATEING_STATE',False)
 		core.settings.set_value('RESTARTTIME',self.init_rewritetime())
 		self.Init_userinfo()
 		self.InitUpdateTieba()
@@ -84,6 +88,7 @@ class Init(object):
 		todayymd = time.strftime("%y-%m-%d")
 		if timehm==core.settings.get_value("TIEBA_UPDATETIME"):
 			if core.settings.get_value("TIEBA_UPDATE_TO") != todayymd:
+				core.settings.set_value('TIEBA_SHIDA_UPDATEING_STATE',True)
 				debug("REALTIME_TIEBA_UPDATE : START",1)
 				core.jx3tieba.tiebatop_update("剑网三",todayymd)
 				core.settings.set_value('TIEBA_UPDATE_TO',todayymd)
@@ -98,6 +103,7 @@ class Init(object):
 				except:
 					debug("******REALTIME_TIEBA_UPDATE : ERROR",1)
 				debug("贴吧十大实时更新结束")
+				core.settings.set_value('TIEBA_SHIDA_UPDATEING_STATE',False)
 #start:
 
 initobj = Init()

@@ -15,6 +15,7 @@ TIEBA_TOP100_TONONVIP = 1
 #漂流瓶文件
 floaterdbname = "floater_pool.txt"
 
+controlPWD = "admin!" #ControlPWD
 
 #邮件模块设置
 mail_host="mail.xxxx"  #设置服务器

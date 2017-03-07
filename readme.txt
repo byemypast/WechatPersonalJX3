@@ -2,6 +2,8 @@
 *请遵守GPL v3协议
 *不兼容python2
 
+version 0.72
+[+]增加VIP功能：强制更新与下载日志等
 version 0.71
 [-]更改图灵模块为喂狗粮
 version 0.7

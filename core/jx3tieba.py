@@ -7,9 +7,13 @@ import heapq
 import time
 import datetime
 from core.debug import *
+from core.game import sendstr
 
-def tiebatop_update(name_tieba,fout):
+def tiebatop_update(name_tieba,fout,sendstrto = ""):
 	debug("启动 贴吧爬虫核心模块 参数："+ name_tieba+" "+fout,1)
+	if sendstrto!="":
+		sendstr(sendstrto,"启动 贴吧爬虫核心模块 参数："+ name_tieba+" "+fout)
+
 	url = 'http://tieba.baidu.com/f?ie=utf-8&kw='+urllib.request.quote(name_tieba)+'&pn='
 	tiebascore = {}
 	tiebaauthor = {}
@@ -26,7 +30,6 @@ def tiebatop_update(name_tieba,fout):
 	while (repeat_i<60): #need try
 		response =  urllib.request.urlopen(url + str(repeat_i * 50))
 		page = response.read()
-		debug('request ok')
 		type = sys.getfilesystemencoding()
 		html = page.decode(type)
 
@@ -54,8 +57,12 @@ def tiebatop_update(name_tieba,fout):
 
 		repeat_i += 1
 		debug(str(repeat_i)+ " / 60",2)
+		if sendstrto!="":
+			sendstr(sendstrto,str(repeat_i)+" / 60")
 	
 	debug("前60页中共有："+ str(len(tiebareply))+" 超过50回复的帖子",2)
+	if sendstrto!="":
+		sendstr(sendstrto,"前60页中共有："+ str(len(tiebareply))+" 超过50回复的帖子")
 	scoresort = sorted(tiebareply.items(),key = lambda item:item[1],reverse = True)
 	toptodaylist = []
 	toplist = []
@@ -82,3 +89,5 @@ def tiebatop_update(name_tieba,fout):
 		f.write(str(i)+"---"+title+" (回复数："+str(tiebareply[title])+" ，作者/发帖时间："+str(tiebaauthor[title])+" / "+str(tiebapostdate[title])+"） https://tieba.baidu.com/p/"+str(tiebapostid[title])+"\n")
 	f.close()
 	debug("贴吧爬虫核心模块 结束",1)
+	if sendstrto!="":
+		sendstr(sendstrto,"贴吧爬虫核心模块 结束")

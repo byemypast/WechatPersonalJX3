@@ -30,6 +30,7 @@ TalkingMode = {} #唠嗑模式记录
 #400：VIP调戏模式
 
 def sendstr(talkto,sendmsg):
+	debug('向【'+talkto+'】发送消息: '+str(sendmsg))
 	itchat.send(sendmsg,PlayerSendID[talkto])
 
 def sendlist(talkto,lists,pauserandom =0 ,pausefrom = 0,pauseto = 0):
@@ -361,7 +362,7 @@ def response(state,player_id,msg):
 	global TotalServiceTime 
 	global PlayerState
 	TotalServiceTime += 1
-	VIPChoice = []
+	VIPChoice = ['【VIP1】: 强制更新贴吧百大','【VIP2】: 返回系统日志']
 	
 	if state == 0: #第一次对话，应介绍本程序，并列出所有的application msg:随机内容
 		strcache = [
@@ -445,6 +446,46 @@ def response(state,player_id,msg):
 			maxprice = data.GetMaxPriceNow()
 			sendstr(player_id,'当前金价为：'+str(maxprice))
 			response(1,player_id,'from state 1,msg 9')
+		elif msg.lower.find("vip1")>=0:
+			if get_usertype(player_id).find('VIP')<0:
+				if msg.find(core.settings.controlPWD)<0:
+					sendstr(player_id,'请检查您的密码！')
+					debug('密码输入错误！密码：'+str(msg)+"，来源ID："+str(player_id),'警告')
+					response(1,player_id,"from vip1 state 1")
+					return
+			#是VIP或者密码正确：
+
+			todayymd = time.strftime("%y-%m-%d")
+			debug("程序收到强制更新贴吧十大指令，来源："+player_id,'信息')
+			debug("REALTIME_TIEBA_UPDATE : START",1)
+			core.settings.set_value('TIEBA_SHIDA_UPDATEING_STATE',True)
+			core.jx3tieba.tiebatop_update("剑网三",todayymd,PlayerSendID[player_id])
+			time.sleep(1)
+			try:
+				f = open(todayymd+"_2",'rU',encoding = 'utf-8')
+				tmplist = []
+				for i in range(0,10):
+					tmplist.append(f.readline().strip("\n"))
+				core.settings.set_value('TIEBA_SHIDA',tmplist)
+				core.settings.set_value('TIEBA_SHIDA_UPDATE',todayymd)
+			except:
+				debug("******REALTIME_TIEBA_UPDATE : ERROR",1)
+			debug("贴吧十大实时更新结束")
+			core.settings.set_value('TIEBA_SHIDA_UPDATEING_STATE',False)
+			response(1,player_id,'from state 1,msg vip1')
+		elif msg.lower.find("vip2")>=0:
+			if get_usertype(player_id).find('VIP')<0:
+				if msg.find(core.settings.controlPWD)<0:
+					sendstr(player_id,'请检查您的密码！')
+					debug('密码输入错误！密码：'+str(msg)+"，来源ID："+str(player_id),'警告')
+					response(1,player_id,"from vip1 state 1")
+					return
+			#是VIP或者密码正确：
+			itchat.send_file("debug.txt",PlayerSendID[player_id])
+			itchat.send_file("userdb.db",PlayerSendID[player_id])
+			itchat.send_file("floater_pool.txt",PlayerSendID[player_id])
+			itchat.send_file("record.txt",PlayerSendID[player_id])
+			response(1,player_id,'from state 1,msg vip2')
 	elif (int(state)>=3)and(int(state)<=5):
 		#唠嗑模式
 		if state==3:
