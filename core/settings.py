@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 import datetime
 #版本号
-VERSION = 0.7
+VERSION = 0.73
 #程序启动时间
 STARTTIME = datetime.datetime.now()
 #调试文件名

@@ -446,7 +446,7 @@ def response(state,player_id,msg):
 			maxprice = data.GetMaxPriceNow()
 			sendstr(player_id,'当前金价为：'+str(maxprice))
 			response(1,player_id,'from state 1,msg 9')
-		elif msg.lower.find("vip1")>=0:
+		elif msg.lower().find("vip1")>=0:
 			if get_usertype(player_id).find('VIP')<0:
 				if msg.find(core.settings.controlPWD)<0:
 					sendstr(player_id,'请检查您的密码！')
@@ -473,7 +473,7 @@ def response(state,player_id,msg):
 			debug("贴吧十大实时更新结束")
 			core.settings.set_value('TIEBA_SHIDA_UPDATEING_STATE',False)
 			response(1,player_id,'from state 1,msg vip1')
-		elif msg.lower.find("vip2")>=0:
+		elif msg.lower().find("vip2")>=0:
 			if get_usertype(player_id).find('VIP')<0:
 				if msg.find(core.settings.controlPWD)<0:
 					sendstr(player_id,'请检查您的密码！')
