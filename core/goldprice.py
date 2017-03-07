@@ -81,15 +81,15 @@ class Drawing_5173Info:
 		self.xdate.append(timenow)
 
 	def __Initfig(self):
-		'''
-		self.fig.autoscale(True,'both',None)
-		self.fig.rc('axes',grid = True)
-		self.fig.plot(range(len(date)),self.aprice)
-		self.fig.plot(range(len(date)),self.mprice)
-		self.fig.xlabel('Time')
-		self.fig.xticks(range(len(date)), date, rotation=45)
-		self.fig.ylabel('Price')
-		'''
+
+		#self.fig.autoscale(True,'both',None)
+		#self.fig.rc('axes',grid = True)
+		#self.fig.plot(range(len(date)),self.aprice)
+		#self.fig.plot(range(len(date)),self.mprice)
+		##self.fig.xlabel('Time')
+		#self.fig.xticks(range(len(date)), date, rotation=45)
+		#self.fig.ylabel('Price')
+
 		self.lines.append(plt.plot(range(len(self.xdate)),self.pricedatas[0],'rx-',label='AveragePrice')[0])
 		self.lines.append(plt.plot(range(len(self.xdate)),self.pricedatas[1],'b+-',label='MaxPrice')[0])
 		
