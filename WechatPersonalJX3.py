@@ -86,7 +86,7 @@ class Init(object):
 #start:
 
 initobj = Init()
-itchat.auto_login(True,enableCmdQR =True)
+itchat.auto_login(True,enableCmdQR =2) #for linux
 itchat.run(False,False)
 
 while (1):
