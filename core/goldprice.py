@@ -1,11 +1,8 @@
 # -*- coding:utf8 -*-  
 import re
 import urllib.request
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 import time
 import datetime
-import gc
 
 
 class Get_5173Info:
@@ -43,7 +40,7 @@ class Get_5173Info:
 			sum += float(ltotal[i])
 			i += 1
 		return totalprice/load
-
+	'''
 class Drawing_5173Info:
 	pricedatas = []
 	xdate = []
@@ -118,7 +115,7 @@ def updatefigs(frame,drawingobject):
 	drawingobject.updatedata()
 	
 	return [drawingobject.updatefig(0),drawingobject.updatefig(1)]
-
+'''
 '''
 data = Get_5173Info()
 TICK = 3600 #隔多久清空面板并保存一次(s)
