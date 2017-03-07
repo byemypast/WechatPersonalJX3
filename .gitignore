@@ -240,3 +240,8 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+debug.txt
+floater_pool.txt
+userdb.db
+starttime.txt

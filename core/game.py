@@ -459,7 +459,7 @@ def response(state,player_id,msg):
 			debug("程序收到强制更新贴吧十大指令，来源："+player_id,'信息')
 			debug("REALTIME_TIEBA_UPDATE : START",1)
 			core.settings.set_value('TIEBA_SHIDA_UPDATEING_STATE',True)
-			core.jx3tieba.tiebatop_update("剑网三",todayymd,PlayerSendID[player_id])
+			core.jx3tieba.tiebatop_update("剑网三",todayymd,player_id)
 			time.sleep(1)
 			try:
 				f = open(todayymd+"_2",'rU',encoding = 'utf-8')
