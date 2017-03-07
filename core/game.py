@@ -9,6 +9,7 @@ from core.debug import *
 import time
 import itchat
 import requests
+import random
 
 PlayerState = {}
 PlayerSendID = {}
@@ -374,7 +375,7 @@ def response(state,player_id,msg):
 		'【5】: 瞎比唠唠嗑 '
 		'【6】: 入帮/给作者提意见添加更多功能 '
 		'【7】: 本次开机统计/我的状态 '
-		'【8】: 聊天模式 '
+		'【8】: 给蠢蠢秃的女生节消息(几率开放/新消息)'
 		'【9】: 纵月实时最高金价（5173）']
 		if get_usertype(player_id).find('VIP')>=0:
 			strcache += VIPChoice
@@ -390,7 +391,7 @@ def response(state,player_id,msg):
 		'【5】: 瞎比唠唠嗑 '
 		'【6】: 入帮/给作者提意见添加更多功能 '
 		'【7】: 本次开机统计/我的状态 '
-		'【8】: 聊天模式'
+		'【8】: 给蠢蠢秃的女生节消息(几率开放/新消息)'
 		'【9】: 纵月实时最高金价（5173）']
 		if get_usertype(player_id).find('VIP')>=0:
 			strcache += VIPChoice
@@ -425,8 +426,20 @@ def response(state,player_id,msg):
 			sendstr(player_id,strcache)
 			PlayerState[player_id] = 1
 		elif msg=='8':
-			sendstr(player_id,'回复【退出】退出聊天模式！')
-			PlayerState[player_id] = 6
+			#sendstr(player_id,'回复【退出】退出聊天模式！')
+			#PlayerState[player_id] = 6
+			strgouliang = ['最喜欢蠢蠢秃啦！','蠢蠢秃女生节快乐！！！','其实这个模块是不断会更新的，取决于圣僧我的灵感- -','要吃的：川军本色、高配德川家、各地驻京办、壹圣元火锅','捏~~~~~',
+									'其实好想啥时候看看金庸啊= =不过最近要把金刚狼和X战警的安利吃完','啊啊啊啊啊啊霸刀啥时候削22太虐了','蠢蠢秃我们啥时候出去玩吼不吼啊！【虽说好像附近没啥好玩的',
+									'其实我一直想去做蛋糕……啥玩意儿没玩过hhhhh','啊啊啊想不出来了偷偷凑个字没人发现吧= =','来本部玩啊来本部玩啊~~~']
+			if (player_id=='君逸')or(player_id=='若竹'):
+				sendstr(player_id,random.choice(strgouliang))
+			else:
+				x = random.randint(1,10)
+				if x<=3:
+					sendstr(player_id,random.choice(strgouliang))
+				else:
+					sendstr(player_id,'嘿嘿嘿不给你吃~要不再试试？几率大概1/3左右')
+			response(1,player_id,'from state 1,msg 8')
 		elif msg=='9':
 			data = core.goldprice.Get_5173Info()
 			maxprice = data.GetMaxPriceNow()
