@@ -1,4 +1,4 @@
-# -*- coding: gbk -*-
+# -*- coding: utf8 -*-
 import datetime
 #版本号
 VERSION = 0.7
