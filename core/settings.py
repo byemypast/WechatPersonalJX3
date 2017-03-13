@@ -16,8 +16,8 @@ TIEBA_TOP100_TONONVIP = 1
 #漂流瓶文件
 floaterdbname = "floater_pool.txt"
 #技能文件
-APP_skill_filename = os.path.normpath(os.getcwd()+"\\settings\\skills.txt")
-APP_skill_savedir = os.path.normpath(os.getcwd()+"\\icons\\")
+APP_skill_filename = os.path.normpath(os.getcwd()+"/settings/skills.txt")
+APP_skill_savedir = os.path.normpath(os.getcwd()+"/icons/")
 controlPWD = "admin!" #ControlPWD
 
 #邮件模块设置
