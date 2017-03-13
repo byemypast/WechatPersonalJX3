@@ -1,7 +1,8 @@
 # -*- coding: utf8 -*-
 import datetime
+import os
 #版本号
-VERSION = 0.73
+VERSION = 0.8
 #程序启动时间
 STARTTIME = datetime.datetime.now()
 #调试文件名
@@ -14,7 +15,9 @@ recordname = "record.txt"
 TIEBA_TOP100_TONONVIP = 1
 #漂流瓶文件
 floaterdbname = "floater_pool.txt"
-
+#技能文件
+APP_skill_filename = os.getcwd()+"\\settings\\skills.txt"
+APP_skill_savedir = os.getcwd()+"\\icons\\"
 controlPWD = "admin!" #ControlPWD
 
 #邮件模块设置

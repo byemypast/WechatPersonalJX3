@@ -10,7 +10,10 @@ import time
 import itchat
 import requests
 import random
-
+import os
+import json
+import core.gameroom
+import core.fetchhm
 PlayerState = {}
 PlayerSendID = {}
 VIPID = '@148cdb5861ba223818e905b76663b7591de19d1d6287838ffe9cf1bc73383e29'
@@ -19,15 +22,21 @@ userdata = {}
 TIEBA_state = {}
 TotalServiceTime = 0
 TalkingMode = {} #唠嗑模式记录
+app_skill_lastinfo = {} #技能模式记录上一次技能
+lobbyhelper = core.gameroom.gameroomhelper()
 #0: 第一次对话介绍+主选单列出
 #1：非第一次对话+主选单列出
 #2：选择主选单
 #3-5：唠嗑模式
 #6：聊天模式
+#10-20：看图标猜技能
 #100：职业选择APP初始化
 #200：贴吧百大
 #300：漂流瓶
 #400：VIP调戏模式
+#500：游戏大厅
+#600：狼人杀
+
 
 def sendstr(talkto,sendmsg):
 	debug('向【'+talkto+'】发送消息: '+str(sendmsg))
@@ -353,9 +362,67 @@ def APP_TIEBA_TOP10(player_id,state,msg):
 			else:
 				sendlist(player_id,top100_2[page*10:(page+1)*10],0,0,0)
 			sendstr(player_id,"第 "+ str(page+1)+" / 10 页 【-1】上一页 【1】下一页 【x】退出")
-			
-			
-			
+
+
+def APP_GameLobby(player_id,state,msg):
+	if state==500:
+		#刚进大厅
+		sendstr(player_id,"欢迎来到游戏大厅！当前房间号有：" + str(lobbyhelper.RoomNameList)+"。您可以输入相应的房间号进入房间，或使用指令【建立房间】新建一个房间。")
+		for room in lobbyhelper.RoomNameList:
+			sendstr(player_id,lobbyhelper.RoomList[room].GetRoomInfo())
+		PlayerState[player_id] = 501
+	elif state==501:
+		if msg=='建立房间':
+			sendstr(player_id,"请输入您的房间名称：")
+			PlayerState[player_id] = 502
+		else:
+			if msg in lobbyhelper.RoomNameList:
+				room = lobbyhelper.RoomList[msg]
+				if room.roommax <= len(room.PlayerID):
+					pass #待完成
+			else:
+				sendstr(player_id,"没有这个房间，请重试！")
+def APP_GuessSkill(player_id,state,msg):
+	if state==10:
+		#第一次进入
+		sendstr(player_id,'请输入每个图标代表的技能/奇穴名，不记得的话随便输啥都行。系统会稍后自动给出正确答案（多个版本可能由于多心法/技能/版本等）。回复【退出】退出该模式~')
+		PlayerState[player_id] = 11
+		app_skill_lastinfo[player_id] = ("",[])
+	else:
+		if msg=='退出':
+			PlayerState[player_id] = 1
+			response(1,player_id,'state 10/11 from guessskill')
+			return
+		lastname,lastdescribe = app_skill_lastinfo[player_id]
+		if msg!=lastname:
+			sendstr(player_id,'猜错啦！上次的技能是：' + lastname)
+		else:
+			sendstr(player_id,'猜对啦！')
+		for index,msg in enumerate(lastdescribe):
+			sendstr(player_id,'版本 %s ：%s' % (index,str(msg)))
+
+	skilllist = core.settings.get_value("APP_SKILL_SKILLLIST")
+	randskill = random.choice(skilllist).replace("/",'or').strip("\n").split("\t")
+	if os.path.exists(core.settings.APP_skill_savedir+str(hash(randskill[0]))+".png"):
+		#有缓存
+		skilliconfile = core.settings.APP_skill_savedir+str(hash(randskill[0]))+".png"
+		skillinfo = json.loads(open(core.settings.APP_skill_savedir+randskill[0]+".txt").read())
+	else:
+		hminfo = core.fetchhm.GetHMInfo()
+		skillicon,skillinfo = hminfo.GetSkill(randskill[0])
+		if skillinfo == None:
+			sendstr(player_id,'获取信息失败！可能是网络错误~')
+			PlayerState[player_id] = 1
+			response(1,player_id,'state 10/11 from guessskill error')
+			return
+		skillicon.save(core.settings.APP_skill_savedir+randskill[0]+".png")
+		skillicon.save(core.settings.APP_skill_savedir+str(hash(randskill[0]))+".png")
+		skilliconfile = core.settings.APP_skill_savedir+str(hash(randskill[0]))+".png"
+		f = open(core.settings.APP_skill_savedir+randskill[0]+".txt",'w')
+		f.write(json.dumps(skillinfo))
+	app_skill_lastinfo[player_id] = (randskill[0],skillinfo)
+	sendstr(player_id,randskill[1])
+	msg = itchat.send_image(core.settings.APP_skill_savedir+str(hash(randskill[0]))+".png",PlayerSendID[player_id])
 
 def response(state,player_id,msg):
 	debug("response received. state: "+str(state)+" "+player_id+" "+msg,1)
@@ -377,7 +444,8 @@ def response(state,player_id,msg):
 		'【6】: 入帮/给作者提意见添加更多功能 '
 		'【7】: 本次开机统计/我的状态 '
 		'【8】: 给蠢蠢秃的女生节消息(几率开放/新消息)'
-		'【9】: 纵月实时最高金价（5173）']
+		'【9】: 纵月实时最高金价（5173）'
+		'【10】: 看图标猜技能']
 		if get_usertype(player_id).find('VIP')>=0:
 			strcache += VIPChoice
 		sendlist(player_id,strcache,1,0.1,0.5)
@@ -393,7 +461,8 @@ def response(state,player_id,msg):
 		'【6】: 入帮/给作者提意见添加更多功能 '
 		'【7】: 本次开机统计/我的状态 '
 		'【8】: 给蠢蠢秃的女生节消息(几率开放/新消息)'
-		'【9】: 纵月实时最高金价（5173）']
+		'【9】: 纵月实时最高金价（5173）'
+		'【10】: 看图标猜技能']
 		if get_usertype(player_id).find('VIP')>=0:
 			strcache += VIPChoice
 		sendlist(player_id,strcache,1,0.1,0.5)
@@ -429,9 +498,9 @@ def response(state,player_id,msg):
 		elif msg=='8':
 			#sendstr(player_id,'回复【退出】退出聊天模式！')
 			#PlayerState[player_id] = 6
-			strgouliang = ['最喜欢蠢蠢秃啦！','蠢蠢秃女生节快乐！！！','其实这个模块是不断会更新的，取决于圣僧我的灵感- -','要吃的：川军本色、高配德川家、各地驻京办、壹圣元火锅','捏~~~~~',
-									'其实好想啥时候看看金庸啊= =不过最近要把金刚狼和X战警的安利吃完','啊啊啊啊啊啊霸刀啥时候削22太虐了','蠢蠢秃我们啥时候出去玩吼不吼啊！【虽说好像附近没啥好玩的',
-									'其实我一直想去做蛋糕……啥玩意儿没玩过hhhhh','啊啊啊想不出来了偷偷凑个字没人发现吧= =','来本部玩啊来本部玩啊~~~']
+			strgouliang = ['最喜欢蠢蠢秃啦！','要吃的：川军本色、高配德川家、各地驻京办、壹圣元火锅','捏~~~~~',
+									'前几天刚下完金刚狼_(:з」∠)_不知道啥时候有空看啊好忙啊','心痛下周就要削大师了心塞','蠢蠢秃我们啥时候出去玩吼不吼啊！【虽说好像附近没啥好玩的',
+									'其实我一直想去做蛋糕……啥玩意儿没玩过hhhhh','啊啊啊想不出来了偷偷凑个字没人发现吧= =','来本部玩啊来本部玩啊~~~','啊等这个号重新上线的时候不知道是哪天了_(:з」∠)_']
 			if (player_id=='君逸')or(player_id=='若竹'):
 				sendstr(player_id,random.choice(strgouliang))
 			else:
@@ -446,6 +515,9 @@ def response(state,player_id,msg):
 			maxprice = data.GetMaxPriceNow()
 			sendstr(player_id,'当前金价为：'+str(maxprice))
 			response(1,player_id,'from state 1,msg 9')
+		elif msg=='10':
+			PlayerState[player_id] = 10
+			APP_GuessSkill(player_id,10,msg)
 		elif msg.lower().find("vip1")>=0:
 			if get_usertype(player_id).find('VIP')<0:
 				if msg.find(core.settings.controlPWD)<0:
@@ -501,7 +573,8 @@ def response(state,player_id,msg):
 	elif (int(state))==6:
 		APP_TuLing(player_id,msg)	
 				
-				
+	elif (int(state)>=10)and(int(state)<20):
+		APP_GuessSkill(player_id,state,msg)
 	elif (int(state)>=100)and(int(state)<200):
 		APP_professiontest(player_id,state,msg)
 	elif (int(state>=200)and(int(state)<300)):
@@ -516,7 +589,7 @@ def dict2d_construct(thedict, key_a, key_b, val):
     thedict[key_a].update({key_b: val})
   else:
     thedict.update({key_a:{key_b: val}})
-		
+
 '''
 
 万花 长歌 苍云 霸刀 少林 七秀 五毒 唐门 藏剑 天策 丐帮 纯阳 明教

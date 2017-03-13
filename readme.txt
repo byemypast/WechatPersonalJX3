@@ -2,6 +2,8 @@
 *请遵守GPL v3协议
 *不兼容python2
 
+version 0.8
+[+]增加看图猜技能功能
 version 0.73
 [-]修复VIP功能的一处BUG
 version 0.72

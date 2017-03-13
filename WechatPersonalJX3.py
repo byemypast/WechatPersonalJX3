@@ -5,7 +5,9 @@ from itchat.content import *
 import core.game
 from core.debug import *
 import core.userinfo
+import core.settings
 import core.jx3tieba
+import os
 
 #@itchat.msg_register([TEXT, MAP, CARD, NOTE, SHARING])
 @itchat.msg_register(TEXT)
@@ -48,6 +50,22 @@ class Init(object):
 		core.settings.set_value('RESTARTTIME',self.init_rewritetime())
 		self.Init_userinfo()
 		self.InitUpdateTieba()
+		self.init_readskills()
+	def init_readskills(self):
+		debug("readskills组件初始化")
+		try:
+			f = open(core.settings.APP_skill_filename)
+			skilllist = f.readlines()
+			f.close()
+			core.settings.set_value("APP_SKILL_SKILLLIST",skilllist)
+
+			if not os.path.exists(core.settings.APP_skill_savedir):
+				os.mkdir(core.settings.APP_skill_savedir)
+		except Exception as e:
+			debug("readskills组件初始化失败，原因："+str(e),'错误')
+			return
+		debug("readskills组件初始化成功！")
+
 	def init_rewritetime(self):
 		f = open("starttime.txt",'rU')
 		s = f.readline()
@@ -107,8 +125,9 @@ class Init(object):
 #start:
 
 initobj = Init()
-itchat.auto_login(True,enableCmdQR =2) #for linux
+itchat.auto_login(True,enableCmdQR =1) #for linux
 itchat.run(True,False)
+
 
 while (1):
 	initobj.RealTimeUpdateTieba()
