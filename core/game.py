@@ -399,7 +399,9 @@ def APP_GuessSkill(player_id,state,msg):
 		else:
 			sendstr(player_id,'猜对啦！')
 		for index,msg in enumerate(lastdescribe):
-			sendstr(player_id,'版本 %s ：%s' % (index,str(msg)))
+			sendstr(player_id,'版本 %s' % (index))
+			sendstr(player_id,"\n".join(msg))
+
 
 	skilllist = core.settings.get_value("APP_SKILL_SKILLLIST")
 	randskill = random.choice(skilllist).replace("/",'or').strip("\n").split("\t")
