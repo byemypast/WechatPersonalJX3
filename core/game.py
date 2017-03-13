@@ -14,6 +14,7 @@ import os
 import json
 import core.gameroom
 import core.fetchhm
+import core.tiebagold
 PlayerState = {}
 PlayerSendID = {}
 VIPID = '@148cdb5861ba223818e905b76663b7591de19d1d6287838ffe9cf1bc73383e29'
@@ -441,12 +442,12 @@ def response(state,player_id,msg):
 		'【1】: 查看给蠢蠢秃的特别消息 ',
 		'【2】: 剑网3 贴吧 今日热门(每晚六点更新) '
 		'【3】: 我真的适合玩这个鬼职业吗 '
-		'【4】: 漂流瓶 '
+		'【4】: 漂流瓶 ',
 		'【5】: 瞎比唠唠嗑 '
 		'【6】: 入帮/给作者提意见添加更多功能 '
 		'【7】: 本次开机统计/我的状态 '
 		'【8】: 给蠢蠢秃的女生节消息(几率开放/新消息)'
-		'【9】: 纵月实时最高金价（5173）'
+		'【9】: 纵月实时最高金价(5173/贴吧)'
 		'【10】: 看图标猜技能']
 		if get_usertype(player_id).find('VIP')>=0:
 			strcache += VIPChoice
@@ -458,12 +459,12 @@ def response(state,player_id,msg):
 		'【1】: 查看给蠢蠢秃的特别消息 ',
 		'【2】: 剑网3 贴吧 今日热门(每晚六点更新) '
 		'【3】: 我真的适合玩这个鬼职业吗 '
-		'【4】: 漂流瓶 '
+		'【4】: 漂流瓶 ',
 		'【5】: 瞎比唠唠嗑 '
 		'【6】: 入帮/给作者提意见添加更多功能 '
 		'【7】: 本次开机统计/我的状态 '
 		'【8】: 给蠢蠢秃的女生节消息(几率开放/新消息)'
-		'【9】: 纵月实时最高金价（5173）'
+		'【9】: 纵月实时最高金价(5173/贴吧)'
 		'【10】: 看图标猜技能']
 		if get_usertype(player_id).find('VIP')>=0:
 			strcache += VIPChoice
@@ -515,7 +516,10 @@ def response(state,player_id,msg):
 		elif msg=='9':
 			data = core.goldprice.Get_5173Info()
 			maxprice = data.GetMaxPriceNow()
-			sendstr(player_id,'当前金价为：'+str(maxprice))
+			datatieba = core.tiebagold.tiebagold()
+			maxpricetieba,maxtimetieba = datatieba.GetGold()
+			sendstr(player_id,'当前5173最高金价为：'+str(maxprice))
+			sendstr(player_id,'当前贴吧最高金价为： %s 。报价时间为 %s ' % (maxpricetieba,maxtimetieba))
 			response(1,player_id,'from state 1,msg 9')
 		elif msg=='10':
 			PlayerState[player_id] = 10

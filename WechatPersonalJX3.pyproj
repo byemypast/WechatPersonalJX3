@@ -37,6 +37,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="core\settings.py" />
+    <Compile Include="core\tiebagold.py" />
     <Compile Include="core\userinfo.py" />
     <Compile Include="core\__init__.py" />
     <Compile Include="text.py">
