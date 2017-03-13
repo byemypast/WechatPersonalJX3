@@ -125,7 +125,7 @@ class Init(object):
 #start:
 
 initobj = Init()
-itchat.auto_login(True,enableCmdQR =1) #for linux
+itchat.auto_login(True,enableCmdQR =2) #for linux
 itchat.run(True,False)
 
 
