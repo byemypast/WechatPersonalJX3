@@ -425,7 +425,7 @@ def APP_GuessSkill(player_id,state,msg):
 		f = open(core.settings.APP_skill_savedir+randskill[0]+".txt",'w')
 		f.write(json.dumps(skillinfo))
 	app_skill_lastinfo[player_id] = (randskill[0],skillinfo)
-	sendstr(player_id,randskill[1]+", 功能简要描述："+randskill[2], player_id)
+	sendstr(player_id,randskill[1]+", 功能简要描述："+randskill[2])
 	msg = itchat.send_image(core.settings.APP_skill_savedir+str(hash(randskill[0]))+".png",PlayerSendID[player_id])
 	info = APP_GuessSkill_GetALikeSkill(randskill[0])
 	if info!=None:
