@@ -387,6 +387,7 @@ def APP_GuessSkill(player_id,state,msg):
 	if state==10:
 		#第一次进入
 		sendstr(player_id,'请输入每个图标代表的技能/奇穴名，不记得的话随便输啥都行。系统会稍后自动给出正确答案（多个版本可能由于多心法/技能/版本等）。回复【退出】退出该模式~')
+		sendstr(player_id,'*注：说明针对各门派JJC奇穴')
 		PlayerState[player_id] = 11
 		app_skill_lastinfo[player_id] = ("",[])
 	else:
@@ -400,7 +401,7 @@ def APP_GuessSkill(player_id,state,msg):
 		else:
 			sendstr(player_id,'猜对啦！')
 		for index,msg in enumerate(lastdescribe):
-			sendstr(player_id,'版本 %s' % (index))
+			sendstr(player_id,'版本 %s' % (index+1))
 			sendstr(player_id,"\n".join(msg))
 
 
@@ -424,9 +425,22 @@ def APP_GuessSkill(player_id,state,msg):
 		f = open(core.settings.APP_skill_savedir+randskill[0]+".txt",'w')
 		f.write(json.dumps(skillinfo))
 	app_skill_lastinfo[player_id] = (randskill[0],skillinfo)
-	sendstr(player_id,randskill[1])
+	sendstr(player_id,randskill[1]+", 功能简要描述："+ player_id,randskill[2])
 	msg = itchat.send_image(core.settings.APP_skill_savedir+str(hash(randskill[0]))+".png",PlayerSendID[player_id])
-
+	info = APP_GuessSkill_GetALikeSkill(randskill[0])
+	if info!=None:
+		#是奇穴
+		sendstr(player_id,"该技能的同层重要奇穴为："+"\n".join(info))
+def APP_GuessSkill_GetALikeSkill(skillname):
+	'''得到同层奇穴信息。如果为技能则不返回任何'''
+	returnlist = []
+	if skillname.find("重")<0:
+		return None
+	else:
+		for index,skill in enumerate(core.settings.get_value("APP_SKILL_SKILLLIST")):
+			if skill.find(skillname[1:])>=0:
+				returnlist.append(skill)
+	return returnlist
 def response(state,player_id,msg):
 	debug("response received. state: "+str(state)+" "+player_id+" "+msg,1)
 	global TotalServiceTime 
