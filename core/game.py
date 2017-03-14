@@ -432,7 +432,7 @@ def APP_GuessSkill(player_id,state,msg):
 	info = APP_GuessSkill_GetALikeSkill(randskill)
 	if info!=None:
 		#是奇穴
-		sendstr(player_id,"同层重要奇穴为："+"\n".join(info))
+		sendstr(player_id,"同层重要奇穴为："+"\n".join(info).replace("\t","\n"))
 def APP_GuessSkill_GetALikeSkill(skillinfo):
 	'''得到同层奇穴信息。如果为技能则不返回任何'''
 	skillname = skillinfo[0]
@@ -440,8 +440,12 @@ def APP_GuessSkill_GetALikeSkill(skillinfo):
 	if skillinfo[1].find("重")<0:
 		return None
 	else:
+		if skillinfo[1][-4:-3]=='第':
+			serachstart = -5
+		else:
+			serachstart = -4
 		for index,skill in enumerate(core.settings.get_value("APP_SKILL_SKILLLIST")):
-			if skill.split("\t")[1].find(skillinfo[1][-4:])>=0:
+			if skill.split("\t")[1].find(skillinfo[1][serachstart:])>=0:
 				if skill.split("\t")[0]!=skillinfo[0]:
 					returnlist.append(skill)
 	return returnlist
