@@ -442,7 +442,8 @@ def APP_GuessSkill_GetALikeSkill(skillinfo):
 	else:
 		for index,skill in enumerate(core.settings.get_value("APP_SKILL_SKILLLIST")):
 			if skill.split("\t")[1].find(skillinfo[1][-4:])>=0:
-				returnlist.append(skill)
+				if skill.split("\t")[0]!=skillinfo[0]:
+					returnlist.append(skill)
 	return returnlist
 def response(state,player_id,msg):
 	debug("response received. state: "+str(state)+" "+player_id+" "+msg,1)
