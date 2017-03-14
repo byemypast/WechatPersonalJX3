@@ -54,7 +54,7 @@ class Init(object):
 	def init_readskills(self):
 		debug("readskills组件初始化")
 		try:
-			f = open(core.settings.APP_skill_filename)
+			f = open(core.settings.APP_skill_filename,encoding = 'utf-8')
 			skilllist = f.readlines()
 			f.close()
 			core.settings.set_value("APP_SKILL_SKILLLIST",skilllist)

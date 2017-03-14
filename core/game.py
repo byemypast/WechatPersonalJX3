@@ -406,7 +406,7 @@ def APP_GuessSkill(player_id,state,msg):
 
 
 	skilllist = core.settings.get_value("APP_SKILL_SKILLLIST")
-	randskill = random.choice(skilllist).replace("/",'or').strip("\n").split("\t")
+	randskill = random.choice(skilllist).strip("\n").split("\t")
 	if os.path.exists(core.settings.APP_skill_savedir+str(hash(randskill[0]))+".png"):
 		#有缓存
 		skilliconfile = core.settings.APP_skill_savedir+str(hash(randskill[0]))+".png"
@@ -425,20 +425,23 @@ def APP_GuessSkill(player_id,state,msg):
 		f = open(core.settings.APP_skill_savedir+randskill[0]+".txt",'w')
 		f.write(json.dumps(skillinfo))
 	app_skill_lastinfo[player_id] = (randskill[0],skillinfo)
-	sendstr(player_id,randskill[1]+", 功能简要描述："+randskill[2])
+	sendstr(player_id,'-------------------')
+	sendstr(player_id,'*请猜猜看下面的奇穴/技能')
+	sendstr(player_id,'*'+randskill[1]+", JJC信息判断："+randskill[2])
 	msg = itchat.send_image(core.settings.APP_skill_savedir+str(hash(randskill[0]))+".png",PlayerSendID[player_id])
-	info = APP_GuessSkill_GetALikeSkill(randskill[0])
+	info = APP_GuessSkill_GetALikeSkill(randskill)
 	if info!=None:
 		#是奇穴
-		sendstr(player_id,"该技能的同层重要奇穴为："+"\n".join(info))
-def APP_GuessSkill_GetALikeSkill(skillname):
+		sendstr(player_id,"同层重要奇穴为："+"\n".join(info))
+def APP_GuessSkill_GetALikeSkill(skillinfo):
 	'''得到同层奇穴信息。如果为技能则不返回任何'''
+	skillname = skillinfo[0]
 	returnlist = []
-	if skillname.find("重")<0:
+	if skillinfo[1].find("重")<0:
 		return None
 	else:
 		for index,skill in enumerate(core.settings.get_value("APP_SKILL_SKILLLIST")):
-			if skill.find(skillname[1:])>=0:
+			if skill.split("\t")[1].find(skillinfo[1][-4:])>=0:
 				returnlist.append(skill)
 	return returnlist
 def response(state,player_id,msg):

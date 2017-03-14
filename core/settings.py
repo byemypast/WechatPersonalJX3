@@ -2,7 +2,7 @@
 import datetime
 import os
 #版本号
-VERSION = 1.00
+VERSION = 1.01
 #程序启动时间
 STARTTIME = datetime.datetime.now()
 #调试文件名
