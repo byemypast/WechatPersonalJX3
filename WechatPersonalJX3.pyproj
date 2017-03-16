@@ -53,6 +53,7 @@
   <ItemGroup>
     <Content Include="core\app\__pycache__\vip1.cpython-36.pyc" />
     <Content Include="readme.txt" />
+    <Content Include="skills.txt" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

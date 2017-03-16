@@ -448,7 +448,10 @@ def APP_GuessSkill_GetALikeSkill(skillinfo):
 			if skill.split("\t")[1].find(skillinfo[1][serachstart:])>=0:
 				if skill.split("\t")[0]!=skillinfo[0]:
 					returnlist.append(skill)
-	return returnlist
+	if returnlist!=[]:
+		return returnlist
+	else:
+		return None
 def response(state,player_id,msg):
 	debug("response received. state: "+str(state)+" "+player_id+" "+msg,1)
 	global TotalServiceTime 
@@ -458,18 +461,18 @@ def response(state,player_id,msg):
 	
 	if state == 0: #第一次对话，应介绍本程序，并列出所有的application msg:随机内容
 		strcache = [
-		'嘿嘿嘿你好啊~ ' + player_id+'，抓到我啦~',
-		'这里是网三纵月【北京大学】帮会聊天机器人，目前版本 '+ str(core.settings.VERSION),
-		'希望能给在无聊的日日日日常中给你一点乐趣和惊喜',
-		'【1】: 查看给蠢蠢秃的特别消息 ',
-		'【2】: 剑网3 贴吧 今日热门(每晚六点更新) '
-		'【3】: 我真的适合玩这个鬼职业吗 '
-		'【4】: 漂流瓶 ',
-		'【5】: 瞎比唠唠嗑 '
-		'【6】: 入帮/给作者提意见添加更多功能 '
-		'【7】: 本次开机统计/我的状态 '
-		'【8】: 给蠢蠢秃的女生节消息(几率开放/新消息)'
-		'【9】: 纵月实时最高金价(5173/贴吧)'
+		'嘿嘿嘿你好啊~ ' + player_id+'，抓到我啦~\n',
+		'这里是网三纵月【北京大学】帮会聊天机器人，目前版本 '+ str(core.settings.VERSION)+"\n",
+		'希望能给在无聊的日日日日常中给你一点乐趣和惊喜\n',
+		'【1】: 查看给蠢蠢秃的特别消息 \n',
+		'【2】: 剑网3 贴吧 今日热门(每晚六点更新) \n'
+		'【3】: 我真的适合玩这个鬼职业吗 \n'
+		'【4】: 漂流瓶 \n',
+		'【5】: 瞎比唠唠嗑 \n'
+		'【6】: 入帮/给作者提意见添加更多功能 \n'
+		'【7】: 本次开机统计/我的状态 \n'
+		'【8】: 给蠢蠢秃的女生节消息(几率开放/新消息)\n'
+		'【9】: 纵月实时最高金价(5173/贴吧)\n'
 		'【10】: 看图标猜技能']
 		if get_usertype(player_id).find('VIP')>=0:
 			strcache += VIPChoice
@@ -477,17 +480,17 @@ def response(state,player_id,msg):
 		PlayerState[player_id] = 2
 	elif state == 1: #非第一次对话，主选单，msg:随机内容
 		strcache = [
-		'嘿嘿嘿~ ' + player_id+'，欢迎回来~ #欣喜',
-		'【1】: 查看给蠢蠢秃的特别消息 ',
-		'【2】: 剑网3 贴吧 今日热门(每晚六点更新) '
-		'【3】: 我真的适合玩这个鬼职业吗 '
-		'【4】: 漂流瓶 ',
-		'【5】: 瞎比唠唠嗑 '
-		'【6】: 入帮/给作者提意见添加更多功能 '
-		'【7】: 本次开机统计/我的状态 '
-		'【8】: 给蠢蠢秃的女生节消息(几率开放/新消息)'
-		'【9】: 纵月实时最高金价(5173/贴吧)'
-		'【10】: 看图标猜技能']
+		'嘿嘿嘿~ ' + player_id+'，欢迎回来~ [皱眉]\n',
+		'【1】: 查看给蠢蠢秃的特别消息 \n',
+		'【2】: 剑网3 贴吧 今日热门(每晚六点更新) \n'
+		'【3】: 我真的适合玩这个鬼职业吗 \n'
+		'【4】: 漂流瓶 \n',
+		'【5】: 瞎比唠唠嗑 \n'
+		'【6】: 入帮/给作者提意见添加更多功能 \n'
+		'【7】: 本次开机统计/我的状态 \n'
+		'【8】: 给蠢蠢秃的女生节消息(几率开放/新消息)\n'
+		'【9】: 纵月实时最高金价(5173/贴吧)\n'
+		'【10】: 看图标猜技能\n']
 		if get_usertype(player_id).find('VIP')>=0:
 			strcache += VIPChoice
 		sendlist(player_id,strcache,1,0.1,0.5)
